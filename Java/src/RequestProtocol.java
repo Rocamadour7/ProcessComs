@@ -1,6 +1,6 @@
 public class RequestProtocol extends Protocol {
 
-    StringBuffer observerName = new StringBuffer(8);
+    private StringBuffer observerName = new StringBuffer(8);
 
     RequestProtocol(String message) {
         String type = String.valueOf(message.charAt(0));
@@ -11,7 +11,9 @@ public class RequestProtocol extends Protocol {
         setType(type);
         setObserverName(observerName);
         setSensorName(sensorName);
-        setChecksum(checksum);
+        if (checksumIsValid(checksum)) {
+            setChecksum(checksum);
+        }
     }
 
     private void setObserverName(String observerName) {
@@ -23,7 +25,17 @@ public class RequestProtocol extends Protocol {
     }
 
     @Override
-    protected StringBuffer calculateChecksum(StringBuffer... properties) {
-        return null;
+    protected Boolean checksumIsValid(String checksum) {
+        int ascii_type = sumChunk(type);
+        int ascii_observerName = sumChunk(observerName);
+        int ascii_sensorName = sumChunk(sensorName);
+        int ascii_checksum = Integer.parseInt(checksum);
+        int total = ascii_type + ascii_observerName + ascii_sensorName;
+
+        if (total == ascii_checksum) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }

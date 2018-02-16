@@ -1,8 +1,8 @@
 public class UpdateProtocol extends Protocol {
 
-    StringBuffer data = new StringBuffer(8);
-    StringBuffer time = new StringBuffer(6);
-    StringBuffer date = new StringBuffer(8);
+    private StringBuffer data = new StringBuffer(8);
+    private StringBuffer time = new StringBuffer(6);
+    private StringBuffer date = new StringBuffer(8);
 
     UpdateProtocol(String message) {
         String type = String.valueOf(message.charAt(0));
@@ -17,7 +17,9 @@ public class UpdateProtocol extends Protocol {
         setData(data);
         setTime(time);
         setDate(date);
-        setChecksum(checksum);
+        if (checksumIsValid(checksum)) {
+            setChecksum(checksum);
+        }
     }
 
     private void setData(String data) {
@@ -45,7 +47,19 @@ public class UpdateProtocol extends Protocol {
     }
 
     @Override
-    protected StringBuffer calculateChecksum(StringBuffer... properties) {
-        return new StringBuffer();
+    protected Boolean checksumIsValid(String checksum) {
+        int ascii_type = sumChunk(type);
+        int ascii_sensorName = sumChunk(sensorName);
+        int ascii_data = sumChunk(data);
+        int ascii_time = sumChunk(time);
+        int ascii_date = sumChunk(date);
+        int ascii_checksum = Integer.parseInt(checksum);
+        int total = ascii_type + ascii_sensorName + ascii_data + ascii_time + ascii_date;
+
+        if (total != ascii_checksum) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }

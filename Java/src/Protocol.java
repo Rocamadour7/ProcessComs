@@ -27,5 +27,17 @@ public abstract class Protocol {
         return Integer.valueOf(checksum.toString());
     }
 
-    protected abstract StringBuffer calculateChecksum(StringBuffer... properties);
+    protected abstract Boolean checksumIsValid(String checksum);
+
+    protected int sumChunk(StringBuffer chunk) {
+        int total = 0;
+
+        char [] _chunk = chunk.toString().toCharArray();
+
+        for (char letter: _chunk) {
+            total += (int)letter;
+        }
+
+        return total;
+    }
 }
