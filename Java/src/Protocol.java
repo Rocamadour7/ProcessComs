@@ -1,9 +1,9 @@
 public abstract class Protocol {
-    protected StringBuffer type = new StringBuffer(1);
-    protected StringBuffer sensorName = new StringBuffer(8);
-    protected StringBuffer checksum = new StringBuffer(4);
+    StringBuffer type = new StringBuffer(1);
+    StringBuffer sensorName = new StringBuffer(8);
+    private StringBuffer checksum = new StringBuffer(4);
 
-    protected void setType(String type) {
+    void setType(String type) {
         this.type = new StringBuffer(type);
     }
 
@@ -11,7 +11,7 @@ public abstract class Protocol {
         return type.toString();
     }
 
-    protected void setSensorName(String sensorName) {
+    void setSensorName(String sensorName) {
         this.sensorName = new StringBuffer(sensorName);
     }
 
@@ -19,7 +19,7 @@ public abstract class Protocol {
         return sensorName.toString();
     }
 
-    protected void setChecksum(String checksum) {
+    void setChecksum(String checksum) {
         this.checksum = new StringBuffer(checksum);
     }
 
@@ -29,7 +29,7 @@ public abstract class Protocol {
 
     protected abstract Boolean checksumIsValid(String checksum);
 
-    protected int sumChunk(StringBuffer chunk) {
+    int sumChunk(StringBuffer chunk) {
         int total = 0;
 
         char [] _chunk = chunk.toString().toCharArray();
@@ -40,4 +40,6 @@ public abstract class Protocol {
 
         return total;
     }
+
+    abstract String getLog();
 }

@@ -26,7 +26,7 @@ public class UpdateProtocol extends Protocol {
         this.data = new StringBuffer(data);
     }
 
-    public String getData() {
+    private String getData() {
         return data.toString();
     }
 
@@ -34,7 +34,7 @@ public class UpdateProtocol extends Protocol {
         this.time = new StringBuffer(time);
     }
 
-    public String getTime() {
+    private String getTime() {
         return time.toString();
     }
 
@@ -56,10 +56,11 @@ public class UpdateProtocol extends Protocol {
         int ascii_checksum = Integer.parseInt(checksum);
         int total = ascii_type + ascii_sensorName + ascii_data + ascii_time + ascii_date;
 
-        if (total != ascii_checksum) {
-            return false;
-        } else {
-            return true;
-        }
+        return total == ascii_checksum;
+    }
+
+    @Override
+    String getLog() {
+        return getSensorName() + ", " + getData() + ", " + getTime() + ", " + getTime();
     }
 }

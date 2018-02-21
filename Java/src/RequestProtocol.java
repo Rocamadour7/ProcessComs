@@ -20,7 +20,7 @@ public class RequestProtocol extends Protocol {
         this.observerName = new StringBuffer(observerName);
     }
 
-    public String getObserverName() {
+    private String getObserverName() {
         return observerName.toString();
     }
 
@@ -32,10 +32,11 @@ public class RequestProtocol extends Protocol {
         int ascii_checksum = Integer.parseInt(checksum);
         int total = ascii_type + ascii_observerName + ascii_sensorName;
 
-        if (total == ascii_checksum) {
-            return false;
-        } else {
-            return true;
-        }
+        return total == ascii_checksum;
+    }
+
+    @Override
+    String getLog() {
+        return getObserverName() + ", " + getSensorName();
     }
 }
