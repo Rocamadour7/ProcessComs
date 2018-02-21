@@ -6,21 +6,18 @@ public class UpdateProtocol extends Protocol {
 
     UpdateProtocol(String message) {
         String type = String.valueOf(message.charAt(0));
-        String sensorName = message.substring(1, 8);
-        String data = message.substring(9, 16);
-        String time = message.substring(17, 22);
-        String date = message.substring(23, 30);
-        String checksum = message.substring(31, 34);
+        String sensorName = message.substring(1, 9);
+        String data = message.substring(9, 17);
+        String time = message.substring(17, 23);
+        String date = message.substring(23, 31);
+        String checksum = message.substring(31, 35);
 
         setType(type);
         setSensorName(sensorName);
         setData(data);
         setTime(time);
         setDate(date);
-
-        if (checksumIsValid(checksum)) {
-            setChecksum(checksum);
-        }
+        setChecksum(checksum);
     }
 
     private void setData(String data) {
@@ -43,12 +40,12 @@ public class UpdateProtocol extends Protocol {
         this.date = new StringBuffer(date);
     }
 
-    public String getDate() {
+    private String getDate() {
         return date.toString();
     }
 
     @Override
-    protected Boolean checksumIsValid(String checksum) {
+    protected Boolean checksumIsValid() {
         int ascii_type = sumChunk(type);
         int ascii_sensorName = sumChunk(sensorName);
         int ascii_data = sumChunk(data);
@@ -61,6 +58,6 @@ public class UpdateProtocol extends Protocol {
 
     @Override
     String getLog() {
-        return getSensorName() + ", " + getData() + ", " + getTime() + ", " + getTime();
+        return getSensorName() + ", " + getData() + ", " + getTime() + ", " + getDate();
     }
 }

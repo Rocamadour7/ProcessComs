@@ -27,7 +27,7 @@ public abstract class Protocol {
         return Integer.valueOf(checksum.toString());
     }
 
-    protected abstract Boolean checksumIsValid(String checksum);
+    protected abstract Boolean checksumIsValid();
 
     int sumChunk(StringBuffer chunk) {
         int total = 0;
