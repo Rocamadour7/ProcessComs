@@ -17,6 +17,7 @@ public class UpdateProtocol extends Protocol {
         setData(data);
         setTime(time);
         setDate(date);
+
         if (checksumIsValid(checksum)) {
             setChecksum(checksum);
         }
@@ -53,10 +54,9 @@ public class UpdateProtocol extends Protocol {
         int ascii_data = sumChunk(data);
         int ascii_time = sumChunk(time);
         int ascii_date = sumChunk(date);
-        int ascii_checksum = Integer.parseInt(checksum);
         int total = ascii_type + ascii_sensorName + ascii_data + ascii_time + ascii_date;
 
-        return total == ascii_checksum;
+        return total == getChecksum();
     }
 
     @Override

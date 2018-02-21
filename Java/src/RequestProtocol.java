@@ -11,6 +11,7 @@ public class RequestProtocol extends Protocol {
         setType(type);
         setObserverName(observerName);
         setSensorName(sensorName);
+
         if (checksumIsValid(checksum)) {
             setChecksum(checksum);
         }
@@ -29,10 +30,9 @@ public class RequestProtocol extends Protocol {
         int ascii_type = sumChunk(type);
         int ascii_observerName = sumChunk(observerName);
         int ascii_sensorName = sumChunk(sensorName);
-        int ascii_checksum = Integer.parseInt(checksum);
         int total = ascii_type + ascii_observerName + ascii_sensorName;
 
-        return total == ascii_checksum;
+        return total == getChecksum();
     }
 
     @Override
