@@ -1,4 +1,3 @@
-import javax.xml.crypto.Data;
 import java.io.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -25,7 +24,7 @@ class ResponseHandler {
 
         String last = null;
         String line;
-        
+
         while ((line = input.readLine()) != null) {
             String[] values = line.split(",");
             if (values[0].equals(sensorName)) {
