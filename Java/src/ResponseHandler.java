@@ -13,21 +13,24 @@ class ResponseHandler {
             case "R":
                 requestQueue.add(log + "\n");
                 try {
-                    result(userOutput);
+                    result(userOutput, protocol.getSensorName());
                 } catch (IOException ignored) {
                 }
                 break;
         }
     }
 
-    private static void result(DataOutputStream userOutput) throws IOException {
+    private static void result(DataOutputStream userOutput, String sensorName) throws IOException {
         BufferedReader input = new BufferedReader(new FileReader("./updateLog.csv"));
 
         String last = null;
         String line;
-
+        
         while ((line = input.readLine()) != null) {
-            last = line;
+            String[] values = line.split(",");
+            if (values[0].equals(sensorName)) {
+                last = line;
+            }
         }
 
         if (last != null) {
