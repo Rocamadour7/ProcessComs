@@ -3,6 +3,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -11,9 +12,16 @@ public class ThreadPoolServer extends Thread {
     private final ExecutorService workers = Executors.newCachedThreadPool();
     private ServerSocket listenSocket;
     private volatile boolean keepRunning = true;
+    private final ProtocolFactory protocolFactory;
+    private final ConcurrentLinkedQueue<String> updateQueue;
+    private final ConcurrentLinkedQueue<String> requestQueue;
 
-    ThreadPoolServer(final int port) {
+    ThreadPoolServer(final int port, final ProtocolFactory protocolFactory, ConcurrentLinkedQueue<String> updateQueue, ConcurrentLinkedQueue<String> requestQueue) {
         Runtime.getRuntime().addShutdownHook(new Thread(ThreadPoolServer.this::shutdown));
+        this.protocolFactory = protocolFactory;
+        this.updateQueue = updateQueue;
+        this.requestQueue = requestQueue;
+
         try {
             listenSocket = new ServerSocket(port);
         } catch (IOException e) {
@@ -36,9 +44,8 @@ public class ThreadPoolServer extends Thread {
         while (keepRunning) {
             try {
                 final Socket clientSocket = listenSocket.accept();
-                System.out.println("Accepted connection from " + clientSocket.getRemoteSocketAddress());
 
-                ClientHandler handler = new ClientHandler(clientSocket);
+                ClientHandler handler = new ClientHandler(clientSocket, protocolFactory, updateQueue, requestQueue);
                 workers.execute(handler);
 
             } catch (SocketTimeoutException ignored) {

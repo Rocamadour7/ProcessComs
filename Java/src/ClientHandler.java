@@ -3,13 +3,20 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ClientHandler implements Runnable {
 
-    private final Socket clientSock;
+    private final Socket clientSocket;
+    private final ProtocolFactory protocolFactory;
+    private final ConcurrentLinkedQueue<String> updateQueue;
+    private final ConcurrentLinkedQueue<String> requestQueue;
 
-    ClientHandler(final Socket clientSocket) {
-        clientSock = clientSocket;
+    ClientHandler(final Socket clientSocket, ProtocolFactory protocolFactory, ConcurrentLinkedQueue<String> updateQueue, ConcurrentLinkedQueue<String> requestQueue) {
+        this.clientSocket = clientSocket;
+        this.protocolFactory = protocolFactory;
+        this.updateQueue = updateQueue;
+        this.requestQueue = requestQueue;
     }
 
     @Override
@@ -17,14 +24,16 @@ public class ClientHandler implements Runnable {
         BufferedReader userInput = null;
         DataOutputStream userOutput = null;
         try {
-            userInput = new BufferedReader(new InputStreamReader(clientSock.getInputStream()));
-            userOutput = new DataOutputStream(clientSock.getOutputStream());
-            String origLine;
-            while ((origLine = userInput.readLine()) != null) {
-                System.out.println(origLine);
-                String upperLine = origLine.toUpperCase() + "\n";
-                userOutput.write(upperLine.getBytes("UTF-8"));
-                userOutput.flush();
+            userInput = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            userOutput = new DataOutputStream(clientSocket.getOutputStream());
+
+            String origLine = userInput.readLine();
+
+            Protocol protocol = protocolFactory.getProtocol(origLine);
+
+            if (protocol != null) {
+                ResponseHandler.pushToQueue(protocol, updateQueue, requestQueue, userOutput);
+                System.out.println(clientSocket.getRemoteSocketAddress() + ": " + origLine);
             }
         } catch (IOException ignored) {
 
@@ -36,8 +45,7 @@ public class ClientHandler implements Runnable {
             if (userOutput != null) {
                 userOutput.close();
             }
-            clientSock.close();
-            System.err.println("Lost connection to " + clientSock.getRemoteSocketAddress());
+            clientSocket.close();
         } catch (IOException ignored) {
 
         }

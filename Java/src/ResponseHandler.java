@@ -1,22 +1,38 @@
+import javax.xml.crypto.Data;
+import java.io.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class ResponseHandler implements Runnable {
+class ResponseHandler {
 
-    private Protocol protocol;
-    private ConcurrentLinkedQueue<String> queue;
-
-    ResponseHandler(Protocol protocol, ConcurrentLinkedQueue<String> queue) {
-        this.protocol = protocol;
-        this.queue = queue;
-    }
-
-    private void pushToQueue() {
+    static void pushToQueue(Protocol protocol, ConcurrentLinkedQueue<String> updateQueue, ConcurrentLinkedQueue<String> requestQueue, DataOutputStream userOutput) {
         String log = protocol.getLog();
-        queue.add(log + "\n");
+        switch (protocol.getType()) {
+            case "U":
+                updateQueue.add(log + "\n");
+                break;
+            case "R":
+                requestQueue.add(log + "\n");
+                try {
+                    result(userOutput);
+                } catch (IOException ignored) {
+                }
+                break;
+        }
     }
 
-    @Override
-    public void run() {
-        pushToQueue();
+    private static void result(DataOutputStream userOutput) throws IOException {
+        BufferedReader input = new BufferedReader(new FileReader("./updateLog.csv"));
+
+        String last = null;
+        String line;
+
+        while ((line = input.readLine()) != null) {
+            last = line;
+        }
+
+        if (last != null) {
+            userOutput.write(last.getBytes("UTF-8"));
+            userOutput.flush();
+        }
     }
 }
