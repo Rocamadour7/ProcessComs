@@ -1,12 +1,13 @@
 import java.io.FileOutputStream;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class Logger implements Runnable {
+public class Logger extends Thread {
 
     private final ConcurrentLinkedQueue<String> queue;
     private FileOutputStream fileOutputStream;
 
-    public Logger(ConcurrentLinkedQueue<String> queue, FileOutputStream fileOutputStream) {
+    Logger(ConcurrentLinkedQueue<String> queue, FileOutputStream fileOutputStream) {
+        Runtime.getRuntime().addShutdownHook(new Thread(Logger.this::shutdown));
         this.queue = queue;
         this.fileOutputStream = fileOutputStream;
     }
@@ -28,6 +29,15 @@ public class Logger implements Runnable {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    private void shutdown() {
+        System.out.println("Shutting down the logger.");
+        try {
+            join();
+        } catch (InterruptedException ignored) {
+
         }
     }
 }
