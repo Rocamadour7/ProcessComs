@@ -58,6 +58,6 @@ public class UpdateProtocol extends Protocol {
 
     @Override
     String getLog() {
-        return getSensorName() + "," + getData() + "," + getTime() + "," + getDate();
+        return getSensorName().trim() + ", " + getData().trim() + ", " + getTime().trim() + ", " + getDate().trim();
     }
 }

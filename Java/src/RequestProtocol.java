@@ -34,6 +34,6 @@ public class RequestProtocol extends Protocol {
 
     @Override
     String getLog() {
-        return getObserverName() + "," + getSensorName();
+        return getObserverName().trim() + ", " + getSensorName().trim();
     }
 }
