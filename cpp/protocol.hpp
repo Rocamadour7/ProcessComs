@@ -16,6 +16,7 @@ class Protocol {
 public:
     virtual string getLog();
     virtual bool checksumIsValid();
+    static Protocol* getProtocol(string message);
 
 protected:
     int sumChunk(string chunk);
