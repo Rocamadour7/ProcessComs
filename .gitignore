@@ -1,2 +1,5 @@
 .idea/
-Java/out/
+.vscode/
+*/out/
+*.csv
+
