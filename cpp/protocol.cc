@@ -2,6 +2,8 @@
 #include "updateprotocol.hpp"
 #include "requestprotocol.hpp"
 
+static inline bool isProtocolValid(Protocol* protocol) ;
+
 Protocol* Protocol::getProtocol(string message) {
     Protocol *protocol;
 
@@ -10,19 +12,18 @@ Protocol* Protocol::getProtocol(string message) {
     } else if ((message.length() == 21) && (message[0] == 'R')) {
         protocol = new RequestProtocol(message);
     } else {
-        protocol = NULL;
+        protocol = nullptr;
     }
 
-    if ((protocol != NULL) && isProtocolValid(protocol)) {
+    if ((protocol != nullptr) && isProtocolValid(protocol)) {
         return protocol;
     } else {
-        return NULL;
+        return nullptr;
     }
 }
 
 static inline bool isProtocolValid(Protocol* protocol) {
-    Protocol _protocol = *protocol;
-    return _protocol.checksumIsValid();
+    return protocol->checksumIsValid();
 }
 
 int Protocol::sumChunk(string chunk) {

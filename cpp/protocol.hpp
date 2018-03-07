@@ -1,9 +1,9 @@
 #pragma once
 
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cerrno>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -14,8 +14,8 @@ using namespace std;
 
 class Protocol {
 public:
-    virtual string getLog();
-    virtual bool checksumIsValid();
+    virtual string getLog() = 0;
+    virtual bool checksumIsValid() = 0;
     static Protocol* getProtocol(string message);
 
 protected:
