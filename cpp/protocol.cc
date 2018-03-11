@@ -35,3 +35,11 @@ int Protocol::sumChunk(string chunk) {
 
     return total;
 }
+
+char Protocol::getType() {
+    return type[0];
+}
+
+string Protocol::getSensorName() {
+    return sensorName;
+}

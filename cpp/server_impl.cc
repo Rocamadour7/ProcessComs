@@ -1,6 +1,8 @@
 #include <iostream>
+
 #include "server.hpp"
 #include "protocol.hpp"
+#include "ResponseHandler.hpp"
 
 Server::Server(int port) {
     port_ = static_cast<uint16_t>(port);
@@ -65,18 +67,19 @@ void Server::serve() {
 }
 
 void Server::handle(int client) {
-    while (true) {
-        string request = get_request(client);
-        if (request.empty()) {
-            break;
-        } else {
-            request = trim(request);
-            Protocol* protocol = Protocol::getProtocol(request);
-            cout << protocol->getLog() << endl;
+    string request = get_request(client);
+    if (request.empty()) {
+        return;
+    } else {
+        request = trim(request);
+        Protocol* protocol = Protocol::getProtocol(request);
+        if (protocol != nullptr) {
+            ResponseHandler::log(protocol);
+//            if (protocol->getType() == 'R') {
+//                string response = ResponseHandler::response(protocol->getSensorName());
+//                bool success = send_response(client, response);
+//            }
         }
-        bool success = send_response(client,request);
-        if (success)
-            break;
     }
     close(client);
 }

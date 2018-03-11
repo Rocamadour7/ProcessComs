@@ -17,6 +17,8 @@ public:
     virtual string getLog() = 0;
     virtual bool checksumIsValid() = 0;
     static Protocol* getProtocol(string message);
+    char getType();
+    string getSensorName();
 
 protected:
     int sumChunk(string chunk);
