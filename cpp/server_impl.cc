@@ -77,6 +77,7 @@ void Server::handle(int client) {
             ResponseHandler::log(protocol);
             if (protocol->getType() == 'R') {
                 string response = ResponseHandler::response(protocol->getSensorName());
+                response.append("\n");
                 send_response(client, response);
             }
         }
