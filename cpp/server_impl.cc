@@ -75,10 +75,10 @@ void Server::handle(int client) {
         Protocol* protocol = Protocol::getProtocol(request);
         if (protocol != nullptr) {
             ResponseHandler::log(protocol);
-//            if (protocol->getType() == 'R') {
-//                string response = ResponseHandler::response(protocol->getSensorName());
-//                bool success = send_response(client, response);
-//            }
+            if (protocol->getType() == 'R') {
+                string response = ResponseHandler::response(protocol->getSensorName());
+                send_response(client, response);
+            }
         }
     }
     close(client);

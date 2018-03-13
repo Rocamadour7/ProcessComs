@@ -1,7 +1,6 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <sstream>
 
 #include "ResponseHandler.hpp"
 
@@ -34,9 +33,9 @@ string ResponseHandler::response(string sensorName) {
     logFile.open(filename);
 
     string line;
-    string last = nullptr;
+    string last;
     while(getline(logFile, line)) {
-        vector<string> values = splitStringByCommas(line);
+        vector<string> values = split(line);
         if (values.at(0) == sensorName) {
             last = line;
         }
@@ -45,18 +44,4 @@ string ResponseHandler::response(string sensorName) {
     logFile.close();
 
     return last;
-}
-
-vector<string> ResponseHandler::splitStringByCommas(string str) {
-    stringstream ss(str);
-    vector<string> result;
-
-    while( ss.good() )
-    {
-        string substring;
-        getline( ss, substring, ',' );
-        result.push_back( substring );
-    }
-
-    return result;
 }
