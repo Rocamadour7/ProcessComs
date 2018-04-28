@@ -33,9 +33,9 @@ class RequestProtocol:
         self.observer_name = ''
         self.sensor_name = ''
         self.checksum = ''
-        self.process_message(message)
+        self._process_message(message)
     
-    def process_message(self, message):
+    def _process_message(self, message):
         self.type = message[0]
         self.observer_name = message[1:9]
         self.sensor_name = message[9:17]
@@ -54,9 +54,9 @@ class UpdateProtocol:
         self.time = ''
         self.date = ''
         self.checksum = ''
-        self.process_message(message)
+        self._process_message(message)
     
-    def process_message(self, message):
+    def _process_message(self, message):
         self.type = message[0]
         self.sensor_name = message[1:9]
         self.data = message[9:17]
